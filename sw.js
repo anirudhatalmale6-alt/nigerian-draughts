@@ -1,8 +1,8 @@
 /* Naija Draft Club service worker: the game works offline once visited; the API is never cached. */
-const CACHE = 'ndc-v1';
+const CACHE = 'ndc-v2';
 const SHELL = [
 	'./', 'index.html', 'how-to-play.html', 'manifest.webmanifest',
-	'src/engine.js', 'src/ai.js', 'src/ai-worker.js?v=2',
+	'src/engine.js', 'src/ai.js?v=3', 'src/ai-worker.js?v=3',
 	'assets/logo.svg', 'assets/icon-192.png', 'assets/icon-512.png',
 ];
 

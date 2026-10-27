@@ -151,6 +151,7 @@ footer a { color: var(--accent); }
 				<option value="ai2">Computer — Medium</option>
 				<option value="ai1">Computer — Easy</option>
 				<option value="ai3">Computer — Hard</option>
+				<option value="ai4">Computer — Master 🏆</option>
 				<option value="pvp">Friend on this device</option>
 			</select>
 		</label>
@@ -226,7 +227,7 @@ footer a { color: var(--accent); }
 </dialog>
 
 <script src="src/engine.js"></script>
-<script src="src/ai.js"></script>
+<script src="src/ai.js?v=3"></script>
 <script>
 (function () {
 	const D = window.Draughts;
@@ -276,7 +277,7 @@ footer a { color: var(--accent); }
 	const crowned = (before, move) => !D.isKing(before.board[move.from[0]][move.from[1]]) &&
 		move.path[move.path.length - 1][0] === (D.colorOf(before.board[move.from[0]][move.from[1]]) === 'w' ? 0 : 9);
 
-	try { worker = new Worker('src/ai-worker.js?v=2'); } catch (e) { worker = null; }
+	try { worker = new Worker('src/ai-worker.js?v=3'); } catch (e) { worker = null; }
 
 	const isAI = () => modeEl.value !== 'pvp';
 	const isHumanTurn = () => !isAI() || state.turn === sideEl.value;
@@ -460,7 +461,7 @@ footer a { color: var(--accent); }
 	}
 
 	const SITE = 'https://naijadraftclub.com';
-	const levelName = () => ({ ai1: 'Easy', ai2: 'Medium', ai3: 'Hard' })[modeEl.value] || '';
+	const levelName = () => ({ ai1: 'Easy', ai2: 'Medium', ai3: 'Hard', ai4: 'Master' })[modeEl.value] || '';
 	function shareText() {
 		if (ended && isAI() && ended === aColor()) return `I just beat the computer (${levelName()}) at Nigerian draughts on Naija Draft Club! Can you? 👉 ${SITE}`;
 		return `Play Nigerian draughts free on Naija Draft Club, and join the club to play members across Nigeria 👉 ${SITE}`;
