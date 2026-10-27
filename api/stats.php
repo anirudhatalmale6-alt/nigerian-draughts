@@ -4,4 +4,5 @@
 declare(strict_types=1);
 require __DIR__ . '/lib.php';
 
-ndc_json(200, ['waiting' => ndc_waiting_count()]);
+// Cached for a minute: thousands of visitors cost at most one database query per minute per browser.
+ndc_json(200, ['waiting' => ndc_waiting_count()], 60);

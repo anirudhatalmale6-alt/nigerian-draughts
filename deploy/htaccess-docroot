@@ -4,3 +4,14 @@ RewriteEngine On
 RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} ^www\. [NC]
 RewriteRule ^(.*)$ https://naijadraftclub.com/$1 [L,R=301]
+
+# Browsers keep the game files, so returning players cost the server almost nothing.
+# Scripts are versioned (?v=N) when they change; pages are always re-checked.
+<IfModule mod_headers.c>
+	<FilesMatch "\.(js|svg|png|webmanifest)$">
+		Header set Cache-Control "public, max-age=86400"
+	</FilesMatch>
+	<FilesMatch "(^sw\.js|\.html)$">
+		Header set Cache-Control "no-cache"
+	</FilesMatch>
+</IfModule>

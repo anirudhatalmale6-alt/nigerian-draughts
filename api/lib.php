@@ -54,10 +54,10 @@ function ndc_db(): PDO {
 	return $pdo;
 }
 
-function ndc_json(int $status, array $data): void {
+function ndc_json(int $status, array $data, int $cacheSeconds = 0): void {
 	http_response_code($status);
 	header('Content-Type: application/json; charset=utf-8');
-	header('Cache-Control: no-store');
+	header('Cache-Control: ' . ($cacheSeconds > 0 ? "public, max-age=$cacheSeconds" : 'no-store'));
 	echo json_encode($data, JSON_UNESCAPED_UNICODE);
 	exit;
 }
