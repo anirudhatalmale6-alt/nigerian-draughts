@@ -1,4 +1,5 @@
 # naijadraftclub.com (addon domain, own folder). One address: https://naijadraftclub.com
+AddType application/manifest+json .webmanifest
 RewriteEngine On
 RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} ^www\. [NC]

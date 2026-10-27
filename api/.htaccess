@@ -1,0 +1,6 @@
+# Helpers are included by the endpoints, never opened directly.
+<Files "lib.php">
+	Require all denied
+</Files>
+RewriteEngine On
+RewriteRule ^lib\.php$ - [F]

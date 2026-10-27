@@ -4,7 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Naija Draft Club — Play Nigerian Draughts Online</title>
-<meta name="description" content="Play Nigerian draughts (10x10, 20 seeds, flying kings, backward capture) against the computer or a friend.">
+<meta name="description" content="Play Nigerian draughts (10x10, 20 seeds, flying kings, backward capture) free against the computer, and join the club to play members across Nigeria.">
+<script>/* The old demo address forwards to the club's own site, where sign-up and feedback work. */
+if (location.hostname.endsWith('github.io')) location.replace('https://naijadraftclub.com/');</script>
+<meta name="theme-color" content="#0f2a1d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://naijadraftclub.com/">
+<meta property="og:title" content="Naija Draft Club — Nigerian draughts online">
+<meta property="og:description" content="Play Nigerian draughts free against the computer. Join the club to play members across Nigeria.">
+<meta property="og:image" content="https://naijadraftclub.com/assets/share-card.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -61,12 +74,72 @@ details ul { padding-left: 18px; margin: 8px 0 0; }
 footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align: center; }
 @media (max-width: 860px) { main { grid-template-columns: 1fr; } .board-wrap { max-width: 640px; } }
 @media (max-width: 480px) { .board { border-width: 6px; } header { padding-top: 12px; } }
+
+/* ---------- Club: header, welcome, forms, sharing ---------- */
+a { color: var(--accent); }
+.brand { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
+.brand img { width: 46px; height: 46px; border-radius: 12px; flex: none; }
+.topnav { display: flex; align-items: center; gap: 10px; }
+.topnav a { color: var(--ink); font-weight: 700; font-size: .9rem; text-decoration: none; padding: .45rem .3rem; }
+.topnav a:hover { color: var(--accent); }
+.icon-btn { padding: .45rem .6rem; font-size: 1rem; line-height: 1; }
+.join-btn { background: var(--accent); color: #1d1405; font-weight: 800; }
+.join-btn.big { padding: .75rem 1.2rem; font-size: 1rem; }
+.welcome { width: 100%; max-width: 1100px; margin: 4px 16px 6px; padding: 14px 18px; border-radius: 14px; box-sizing: border-box;
+	background: linear-gradient(120deg, rgba(242,179,61,.16), rgba(47,125,79,.25)); border: 1px solid rgba(242,179,61,.25);
+	display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.welcome p { margin: 0; font-size: .95rem; line-height: 1.5; color: var(--ink); max-width: 70ch; }
+.welcome-cta { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: none; }
+.waiting { font-size: .8rem; color: var(--muted); text-align: center; }
+.share { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px; padding: .6rem .8rem; font-weight: 700;
+	background: #1fa855; color: #fff; text-decoration: none; text-align: center; }
+.share:hover { filter: brightness(1.08); }
+.share.wide { width: 100%; box-sizing: border-box; }
+.status .share { margin-top: 10px; font-size: .85rem; padding: .5rem .75rem; }
+footer a { color: var(--accent); }
+.modal { border: 0; padding: 0; background: transparent; max-width: min(440px, calc(100vw - 24px)); width: 100%; color: var(--ink); }
+.modal::backdrop { background: rgba(4, 14, 9, .72); }
+.modal-card { position: relative; background: var(--panel); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 22px 20px 20px; display: grid; gap: 12px; }
+.modal-card h2 { margin: 0; font-size: 1.3rem; }
+.modal-card .sub { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.45; }
+.modal-card label { font-size: .85rem; }
+.modal-card label small { color: var(--muted); font-weight: 400; }
+.modal-card input, .modal-card textarea { font: inherit; color: var(--ink); background: #0d2418; border: 1px solid rgba(255,255,255,.16); border-radius: 10px; padding: .65rem .75rem; width: 100%; box-sizing: border-box; }
+.modal-card input:focus, .modal-card textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.modal-card .primary { width: 100%; padding: .75rem; background: var(--accent); color: #1d1405; font-weight: 800; grid-column: auto; }
+[hidden] { display: none !important; }
+.modal-card .x { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; padding: 0; font-size: 1.4rem; line-height: 1; background: transparent; color: var(--muted); }
+.form-msg { margin: 0; min-height: 1.2em; font-size: .85rem; font-weight: 700; }
+.form-msg.err { color: #ff8a7a; }
+.hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.seed.slide { animation: slide .24s ease-out; z-index: 2; }
+@keyframes slide { from { transform: translate(calc(var(--dx) * 121.95%), calc(var(--dy) * 121.95%)); } }
+@media (prefers-reduced-motion: reduce) { .seed.slide { animation: none; } }
+@media (max-width: 860px) {
+	.welcome { flex-direction: column; align-items: stretch; text-align: left; margin: 4px 16px 6px; width: calc(100% - 32px); }
+	.welcome-cta { align-items: stretch; }
+}
+@media (max-width: 520px) {
+	.tag { display: none; }
+	.topnav a { display: none; }
+	.brand img { width: 40px; height: 40px; }
+	.topnav .join-btn { padding: .5rem .7rem; font-size: .85rem; }
+}
 </style>
 </head>
 <body>
 <header>
-	<div><h1>Naija <span>Draft Club</span></h1><p class="tag">Nigerian draughts · 10×10 · 20 seeds · flying kings · backward capture</p></div>
+	<a class="brand" href="./"><img src="assets/logo.svg" alt="" width="46" height="46"><div><h1>Naija <span>Draft Club</span></h1><p class="tag">Nigerian draughts · 10×10 · 20 seeds · flying kings</p></div></a>
+	<nav class="topnav">
+		<a href="how-to-play.html">How to play</a>
+		<button id="sound" class="icon-btn" type="button" aria-pressed="true" title="Sound on/off">🔊</button>
+		<button class="join-btn" type="button" data-open="join">Join the club</button>
+	</nav>
 </header>
+<section class="welcome">
+	<p><b>Welcome to Naija Draft Club!</b> Play Nigerian draughts free against the computer. Coming soon: play club members from Lagos to Kano, climb the rankings and reach the <b>Executive room</b> for the best players.</p>
+	<div class="welcome-cta"><button class="join-btn big" type="button" data-open="join">Join the waiting list</button><span id="waiting" class="waiting">Be one of the first members</span></div>
+</section>
 <main>
 	<div class="board-wrap"><div id="board" class="board" aria-label="Draughts board"></div></div>
 	<aside class="panel">
@@ -89,8 +162,12 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 			<button id="undo">Undo</button>
 			<button id="flip">Flip board</button>
 		</div>
+		<div class="btns">
+			<button id="feedbackBtn" type="button" data-open="feedback">💬 Send feedback</button>
+			<a id="shareBtn" class="share" href="https://wa.me/" target="_blank" rel="noopener">Share on WhatsApp</a>
+		</div>
 		<details>
-			<summary>Rules</summary>
+			<summary>Rules (short)</summary>
 			<ul>
 				<li>Men move one square diagonally forward, but capture forward <b>and backward</b>.</li>
 				<li>Capturing is compulsory, and you must keep jumping while you can — but you may choose <b>any</b> capture, not necessarily the biggest.</li>
@@ -99,10 +176,54 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 				<li>You win when your opponent has no seeds or cannot move.</li>
 					<li>After each game the players switch colours, so the other player takes White and starts.</li>
 			</ul>
+			<p><a href="how-to-play.html">Full rules with pictures →</a></p>
 		</details>
 	</aside>
 </main>
-<footer>Demo of the rules engine — online play, accounts and lobby come next.</footer>
+<footer>Naija Draft Club · test version: tell us what you think with <a href="#" data-open="feedback">Send feedback</a> · <a href="how-to-play.html">How to play</a></footer>
+
+<dialog id="join" class="modal" aria-labelledby="joinTitle">
+	<form id="joinForm" class="modal-card" novalidate>
+		<button type="button" class="x" data-close aria-label="Close">×</button>
+		<h2 id="joinTitle">Join the club</h2>
+		<p class="sub">Be among the first members when online play opens. We'll let you know by email (and on WhatsApp if you like).</p>
+		<label>Your name<input name="name" required maxlength="80" autocomplete="name"></label>
+		<label>Email<input name="email" type="email" required maxlength="190" autocomplete="email" inputmode="email"></label>
+		<label>WhatsApp number <small>(optional)</small><input name="whatsapp" type="tel" maxlength="24" placeholder="+234 803 000 0000" autocomplete="tel"></label>
+		<label>City or state<input name="city" list="ng-states" maxlength="60" autocomplete="address-level1"></label>
+		<datalist id="ng-states"><option value="Abia"><option value="Adamawa"><option value="Akwa Ibom"><option value="Anambra"><option value="Bauchi"><option value="Bayelsa"><option value="Benue"><option value="Borno"><option value="Cross River"><option value="Delta"><option value="Ebonyi"><option value="Edo"><option value="Ekiti"><option value="Enugu"><option value="FCT Abuja"><option value="Gombe"><option value="Imo"><option value="Jigawa"><option value="Kaduna"><option value="Kano"><option value="Katsina"><option value="Kebbi"><option value="Kogi"><option value="Kwara"><option value="Lagos"><option value="Nasarawa"><option value="Niger"><option value="Ogun"><option value="Ondo"><option value="Osun"><option value="Oyo"><option value="Plateau"><option value="Rivers"><option value="Sokoto"><option value="Taraba"><option value="Yobe"><option value="Zamfara"><option value="Outside Nigeria"></datalist>
+		<input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+		<p class="form-msg" role="status"></p>
+		<button class="primary" type="submit">Join the waiting list</button>
+	</form>
+	<div class="modal-card done" hidden>
+		<button type="button" class="x" data-close aria-label="Close">×</button>
+		<h2>You're on the list! 🎉</h2>
+		<p class="sub" id="joinDone">We'll tell you as soon as online play opens.</p>
+		<a class="share wide" id="joinShare" href="https://wa.me/" target="_blank" rel="noopener">Invite your friends on WhatsApp</a>
+		<button class="primary" type="button" data-close>Back to the game</button>
+	</div>
+</dialog>
+
+<dialog id="feedback" class="modal" aria-labelledby="fbTitle">
+	<form id="feedbackForm" class="modal-card" novalidate>
+		<button type="button" class="x" data-close aria-label="Close">×</button>
+		<h2 id="fbTitle">Send feedback</h2>
+		<p class="sub">What do you like? What should we improve: rules, difficulty, design, anything? It goes straight to the club.</p>
+		<label>Your message<textarea name="message" required maxlength="2000" rows="5"></textarea></label>
+		<label>Your name <small>(optional)</small><input name="name" maxlength="80" autocomplete="name"></label>
+		<label>Email <small>(optional, if you'd like a reply)</small><input name="email" type="email" maxlength="190" autocomplete="email"></label>
+		<input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+		<p class="form-msg" role="status"></p>
+		<button class="primary" type="submit">Send</button>
+	</form>
+	<div class="modal-card done" hidden>
+		<button type="button" class="x" data-close aria-label="Close">×</button>
+		<h2>Thank you! 🙏</h2>
+		<p class="sub">Your feedback has been sent to the club.</p>
+		<button class="primary" type="button" data-close>Back to the game</button>
+	</div>
+</dialog>
 
 <script src="src/engine.js"></script>
 <script src="src/ai.js"></script>
@@ -120,6 +241,40 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 	let aiRequest = 0, anim = null;
 	// Match between games: "a" is You (or Player 1), "b" the Computer (or Player 2). Players swap colours each game.
 	let match = { a: 0, b: 0 }, p1 = 'w', ended = null, nextTimer = null, countdown = 0;
+	// The seed that just moved slides in from its previous square on the next render.
+	let slide = null;
+
+	/* Small synthesised sounds (no audio files to download). */
+	const Sound = (() => {
+		let ctx = null, on = true;
+		try { on = localStorage.getItem('ndc-sound') !== 'off'; } catch (e) { /* private mode */ }
+		const tone = (freq, at, dur, type = 'sine', vol = 0.18) => {
+			const o = ctx.createOscillator(), g = ctx.createGain();
+			o.type = type; o.frequency.setValueAtTime(freq, ctx.currentTime + at);
+			g.gain.setValueAtTime(0.0001, ctx.currentTime + at);
+			g.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + at + 0.01);
+			g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + at + dur);
+			o.connect(g).connect(ctx.destination); o.start(ctx.currentTime + at); o.stop(ctx.currentTime + at + dur + 0.02);
+		};
+		const sounds = {
+			move: () => { tone(320, 0, 0.07, 'triangle', 0.22); },
+			capture: () => { tone(180, 0, 0.09, 'square', 0.12); tone(120, 0.05, 0.12, 'triangle', 0.2); },
+			king: () => { [523, 659, 784].forEach((f, i) => tone(f, i * 0.09, 0.18, 'triangle', 0.16)); },
+			win: () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.25, 'triangle', 0.16)); },
+			lose: () => { [392, 330, 262].forEach((f, i) => tone(f, i * 0.16, 0.3, 'sine', 0.16)); },
+		};
+		return {
+			play(name) {
+				if (!on) return;
+				try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); sounds[name](); } catch (e) { /* no audio */ }
+			},
+			get on() { return on; },
+			toggle() { on = !on; try { localStorage.setItem('ndc-sound', on ? 'on' : 'off'); } catch (e) { /* ignore */ } return on; },
+		};
+	})();
+	const stepSound = (move) => Sound.play(move.captures.length ? 'capture' : 'move');
+	const crowned = (before, move) => !D.isKing(before.board[move.from[0]][move.from[1]]) &&
+		move.path[move.path.length - 1][0] === (D.colorOf(before.board[move.from[0]][move.from[1]]) === 'w' ? 0 : 9);
 
 	try { worker = new Worker('src/ai-worker.js?v=2'); } catch (e) { worker = null; }
 
@@ -190,6 +345,12 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 				if (p) {
 					const s = document.createElement('div');
 					s.className = 'seed ' + D.colorOf(p) + (D.isKing(p) ? ' king' : '') + (taken.has(k) ? ' taken' : '');
+					if (slide && D.sameSq(slide.to, [r, c])) {
+						const col = (q) => (flipped ? 9 - q[1] : q[1]), row = (q) => (flipped ? 9 - q[0] : q[0]);
+						s.style.setProperty('--dx', col(slide.from) - col(slide.to));
+						s.style.setProperty('--dy', row(slide.from) - row(slide.to));
+						s.classList.add('slide');
+					}
 					sq.appendChild(s);
 				}
 				if (D.isDark(r, c)) sq.addEventListener('click', () => onSquare(r, c));
@@ -199,6 +360,10 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 		const n = D.count(state.board);
 		document.getElementById('cw').textContent = n.w + (n.wk ? ` (${n.wk}♛)` : '');
 		document.getElementById('cb').textContent = n.b + (n.bk ? ` (${n.bk}♛)` : '');
+		// Keep the slide for every redraw in this same task (e.g. "Computer is thinking…" right after your
+		// move), since only the last one is painted; drop it afterwards so later redraws don't replay it.
+		if (slide) { const cur = slide; setTimeout(() => { if (slide === cur) slide = null; }, 0); }
+		updateShare();
 		const [an, bn] = isAI() ? ['You', 'Computer'] : ['Player 1', 'Player 2'];
 		matchEl.innerHTML = `Match <b>${an} ${match.a} – ${match.b} ${bn}</b><small>${an} play${isAI() ? '' : 's'} ${who(aColor())} this game</small>`;
 
@@ -206,7 +371,8 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 			const head = ended === 'draw' ? 'Draw' : `${who(ended)} wins!`;
 			const line = ended === 'draw' ? '25 king moves each without a capture.' : `${nameOf(ended)} won this game.`;
 			const next = `Next game: players switch sides, so <b>${nameOf('b')}</b> takes White and starts.`;
-			statusEl.innerHTML = `${head}<small>${line}</small><small>${next}</small>` +
+			const brag = isAI() && ended === aColor() ? `<a class="share" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText())}">Share your win on WhatsApp</a>` : '';
+			statusEl.innerHTML = `${head}<small>${line}</small>${brag}<small>${next}</small>` +
 				`<span class="next">${nextTimer ? `<button data-act="next">Start now (${countdown})</button><button data-act="stay">Stay on this board</button>` : '<button data-act="next">Next game</button>'}</span>`;
 		} else if (anim) statusEl.innerHTML = 'Computer is moving…';
 		else if (thinking) statusEl.innerHTML = '<span class="thinking">Computer is thinking…</span>';
@@ -230,13 +396,17 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 		const cands = candidateMoves().filter((m) => m.path[partial.length] && D.sameSq(m.path[partial.length], [r, c]));
 		if (!cands.length) { if (!partial.length) { selected = null; render(); } return; }
 		partial.push([r, c]);
+		slide = { from: partial.length > 1 ? partial[partial.length - 2] : selected, to: [r, c] };
 		const done = cands.find((m) => m.path.length === partial.length);
 		const more = cands.some((m) => m.path.length > partial.length);
 		if (done && !more) play(done);
-		else render();
+		else { stepSound(cands[0]); render(); }
 	}
 
 	function play(move) {
+		const n = move.path.length;
+		slide = { from: n > 1 ? move.path[n - 2] : move.from, to: move.path[n - 1] };
+		if (crowned(state, move)) Sound.play('king'); else stepSound(move);
 		history.push(state);
 		state = D.applyMove(state, move);
 		lastMove = move; selected = null; partial = [];
@@ -249,6 +419,7 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 		if (res) {
 			ended = res;
 			if (res !== 'draw') { if (res === aColor()) match.a++; else match.b++; }
+			Sound.play(res === 'draw' ? 'move' : (!isAI() || res === aColor()) ? 'win' : 'lose');
 			countdown = 8;
 			nextTimer = setInterval(() => { countdown--; if (countdown <= 0) nextGame(); else render(); }, 1000);
 			render();
@@ -269,8 +440,14 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 			anim = { move, step: 0 };
 			const step = () => {
 				if (id !== aiRequest) return;
-				if (anim.step < move.path.length) { anim.step++; render(); setTimeout(step, move.captures.length ? 420 : 220); return; }
+				if (anim.step < move.path.length) {
+					anim.step++;
+					slide = { from: anim.step > 1 ? move.path[anim.step - 2] : move.from, to: move.path[anim.step - 1] };
+					stepSound(move); render();
+					setTimeout(step, move.captures.length ? 420 : 260); return;
+				}
 				anim = null; thinking = false;
+				if (crowned(state, move)) Sound.play('king');
 				history.push(state); state = D.applyMove(state, move); lastMove = move;
 				afterMove();
 			};
@@ -280,6 +457,28 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 			worker.onmessage = (e) => { if (e.data && e.data.id === id) finish(e.data.move); };
 			worker.postMessage({ state: snapshot, level, id });
 		} else setTimeout(() => finish(window.DraughtsAI.chooseMove(snapshot, level)), 30);
+	}
+
+	const SITE = 'https://naijadraftclub.com';
+	const levelName = () => ({ ai1: 'Easy', ai2: 'Medium', ai3: 'Hard' })[modeEl.value] || '';
+	function shareText() {
+		if (ended && isAI() && ended === aColor()) return `I just beat the computer (${levelName()}) at Nigerian draughts on Naija Draft Club! Can you? 👉 ${SITE}`;
+		return `Play Nigerian draughts free on Naija Draft Club, and join the club to play members across Nigeria 👉 ${SITE}`;
+	}
+	function updateShare() {
+		const a = document.getElementById('shareBtn');
+		if (a) a.href = 'https://wa.me/?text=' + encodeURIComponent(shareText());
+	}
+	window.NDC = {
+		context: () => `${isAI() ? 'vs computer ' + levelName() : 'friend on same device'}, playing ${who(aColor())}, ${history.length} moves, ` +
+			(ended ? `ended: ${ended === 'draw' ? 'draw' : who(ended) + ' won'}` : 'in progress'),
+		inviteText: () => `I just joined the Naija Draft Club waiting list. Come and play Nigerian draughts with me 👉 ${SITE}`,
+	};
+	const soundBtn = document.getElementById('sound');
+	if (soundBtn) {
+		const show = () => { soundBtn.textContent = Sound.on ? '🔊' : '🔇'; soundBtn.setAttribute('aria-pressed', String(Sound.on)); };
+		soundBtn.addEventListener('click', () => { Sound.toggle(); show(); });
+		show();
 	}
 
 	statusEl.addEventListener('click', (e) => {
@@ -303,6 +502,82 @@ footer { color: var(--muted); font-size: .8rem; padding: 0 16px 24px; text-align
 	modeEl.addEventListener('change', () => start(true));
 	sideEl.addEventListener('change', () => start(true));
 	start(true);
+})();
+</script>
+
+<script>
+/* Club features: waiting list, feedback, the "players waiting" counter and offline install. */
+(function () {
+	const api = (path, body) => fetch('api/' + path, {
+		method: body ? 'POST' : 'GET',
+		headers: body ? { 'Content-Type': 'application/json' } : {},
+		body: body ? JSON.stringify(body) : undefined,
+	}).then(async (res) => {
+		const data = await res.json().catch(() => ({}));
+		if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+		return data;
+	});
+
+	const showWaiting = (n) => {
+		const el = document.getElementById('waiting');
+		// A small number looks empty, so the counter appears once the list has some players.
+		if (el && n >= 10) el.textContent = `🔥 ${n} players already waiting`;
+	};
+	api('stats.php').then((d) => showWaiting(d.waiting)).catch(() => {});
+
+	// Open / close the dialogs.
+	document.addEventListener('click', (e) => {
+		const opener = e.target.closest('[data-open]');
+		if (opener) {
+			e.preventDefault();
+			const dlg = document.getElementById(opener.dataset.open);
+			if (dlg && !dlg.open) {
+				dlg.querySelector('form').hidden = false;
+				dlg.querySelector('.done').hidden = true;
+				dlg.querySelector('.form-msg').textContent = '';
+				dlg.showModal();
+				const first = dlg.querySelector('input:not(.hp), textarea');
+				if (first) first.focus();
+			}
+			return;
+		}
+		if (e.target.closest('[data-close]')) e.target.closest('dialog').close();
+	});
+	document.querySelectorAll('dialog').forEach((dlg) => dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); }));
+
+	function wire(formId, endpoint, extra, onDone) {
+		const form = document.getElementById(formId);
+		const msg = form.querySelector('.form-msg');
+		const btn = form.querySelector('button[type=submit]');
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const data = Object.fromEntries(new FormData(form).entries());
+			Object.assign(data, extra ? extra() : {});
+			msg.className = 'form-msg'; msg.textContent = 'Sending…'; btn.disabled = true;
+			api(endpoint, data).then((res) => {
+				form.reset(); form.hidden = true;
+				const done = form.parentElement.querySelector('.done');
+				done.hidden = false; onDone && onDone(res, done);
+			}).catch((err) => {
+				msg.className = 'form-msg err';
+				msg.textContent = navigator.onLine === false ? 'You are offline. Please try again when connected.' : err.message;
+			}).finally(() => { btn.disabled = false; });
+		});
+	}
+
+	wire('joinForm', 'join.php', null, (res) => {
+		const n = res.waiting || 0;
+		document.getElementById('joinDone').textContent = n >= 10
+			? `${n} players are waiting for the club to open. We'll tell you as soon as online play starts.`
+			: "You're one of the very first members! We'll tell you as soon as online play starts.";
+		document.getElementById('joinShare').href = 'https://wa.me/?text=' + encodeURIComponent(window.NDC ? window.NDC.inviteText() : 'https://naijadraftclub.com');
+		showWaiting(n);
+	});
+	wire('feedbackForm', 'feedback.php', () => ({ context: window.NDC ? window.NDC.context() : '' }));
+
+	if ('serviceWorker' in navigator && location.protocol === 'https:') {
+		window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+	}
 })();
 </script>
 </body>

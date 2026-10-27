@@ -1,1 +1,3 @@
 node_modules/
+deploy/.ndc.env
+deploy/config.php
