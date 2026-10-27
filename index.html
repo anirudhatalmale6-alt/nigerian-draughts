@@ -51,6 +51,7 @@ main { width: 100%; max-width: 1100px; padding: 8px 16px 32px; display: grid; gr
 .seed.taken::before { content: "✕"; position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(.9rem, 3.4vw, 1.7rem); font-weight: 800; color: #e0473b; z-index: 1; }
 .match { font-size: .85rem; color: var(--muted); background: rgba(0,0,0,.2); border-radius: 10px; padding: 8px 10px; }
 .match b { color: var(--ink); } .match small { display: block; margin-top: 2px; }
+.match .lvl { float: right; background: rgba(242,179,61,.18); color: var(--accent); font-weight: 800; font-size: .75rem; padding: .1rem .5rem; border-radius: 999px; }
 .status .next { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .status .next button { font-size: .85rem; padding: .5rem .75rem; }
 .status .next button:first-child { background: var(--accent); color: #1d1405; }
@@ -366,7 +367,7 @@ footer a { color: var(--accent); }
 		if (slide) { const cur = slide; setTimeout(() => { if (slide === cur) slide = null; }, 0); }
 		updateShare();
 		const [an, bn] = isAI() ? ['You', 'Computer'] : ['Player 1', 'Player 2'];
-		matchEl.innerHTML = `Match <b>${an} ${match.a} – ${match.b} ${bn}</b><small>${an} play${isAI() ? '' : 's'} ${who(aColor())} this game</small>`;
+		matchEl.innerHTML = `Match <b>${an} ${match.a} – ${match.b} ${bn}</b>${isAI() ? `<span class="lvl">Level: ${levelName()}</span>` : ''}<small>${an} play${isAI() ? '' : 's'} ${who(aColor())} this game</small>`;
 
 		if (ended) {
 			const head = ended === 'draw' ? 'Draw' : `${who(ended)} wins!`;
@@ -461,7 +462,7 @@ footer a { color: var(--accent); }
 	}
 
 	const SITE = 'https://naijadraftclub.com';
-	const levelName = () => ({ ai1: 'Easy', ai2: 'Medium', ai3: 'Hard', ai4: 'Master' })[modeEl.value] || '';
+	function levelName() { return ({ ai1: 'Easy', ai2: 'Medium', ai3: 'Hard', ai4: 'Master' })[modeEl.value] || ''; }
 	function shareText() {
 		if (ended && isAI() && ended === aColor()) return `I just beat the computer (${levelName()}) at Nigerian draughts on Naija Draft Club! Can you? 👉 ${SITE}`;
 		return `Play Nigerian draughts free on Naija Draft Club, and join the club to play members across Nigeria 👉 ${SITE}`;
