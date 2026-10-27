@@ -13,7 +13,7 @@ if (!is_file($ndcConfig)) {
 	http_response_code(500);
 	exit('Not configured');
 }
-require $ndcConfig; // defines NDC_DSN, NDC_DB_USER, NDC_DB_PASS, NDC_OWNER_EMAIL, NDC_MAIL_FROM, NDC_SALT
+require $ndcConfig; // defines NDC_DSN, NDC_DB_USER, NDC_DB_PASS, NDC_OWNER_EMAIL (comma-separated), NDC_MAIL_FROM, NDC_SALT
 
 function ndc_db(): PDO {
 	static $pdo = null;
@@ -122,5 +122,11 @@ function ndc_notify(string $subject, string $body, string $replyTo = ''): bool {
 		$headers[] = 'Reply-To: ' . $replyTo;
 	}
 	$subject = mb_encode_mimeheader(str_replace(["\r", "\n"], ' ', $subject), 'UTF-8');
-	return @mail(NDC_OWNER_EMAIL, $subject, $body, implode("\r\n", $headers), '-f' . NDC_MAIL_FROM);
+	// One message per recipient: the host's sendmail refuses a combined "a, b" list, and a bad
+	// address must never stop the others from getting the notification.
+	$sent = false;
+	foreach (array_filter(array_map('trim', explode(',', NDC_OWNER_EMAIL))) as $to) {
+		$sent = @mail($to, $subject, $body, implode("\r\n", $headers), '-f' . NDC_MAIL_FROM) || $sent;
+	}
+	return $sent;
 }
