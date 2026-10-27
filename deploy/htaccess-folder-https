@@ -1,0 +1,10 @@
+# naijadraftclub.com lives in this folder of the ehmar.com hosting account (alias domain).
+# These rules replace the store's rules for this folder, so WordPress never answers here.
+RewriteEngine On
+# Only reachable through naijadraftclub.com (ehmar.com/naijadraftclub/ gives 404).
+RewriteCond %{HTTP_HOST} !^(www\.)?naijadraftclub\.com$ [NC]
+RewriteRule ^ - [R=404,L]
+# One address: https://naijadraftclub.com (www and http both redirect there).
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^(.*)$ https://naijadraftclub.com/$1 [L,R=301]
