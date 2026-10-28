@@ -176,6 +176,7 @@ footer a { color: var(--accent); }
 				<li>Captured seeds stay on the board (faded) until your move is finished, and cannot be jumped twice.</li>
 				<li>A man reaching the far row (and stopping there) becomes a <b>flying king</b>: it moves and captures any distance along a diagonal.</li>
 				<li>You win when your opponent has no seeds or cannot move.</li>
+				<li>Draw: when each side has only 1 or 2 seeds left and 4 moves each pass without a capture (or 25 moves each without a capture in general).</li>
 					<li>After each game the players switch colours, so the other player takes White and starts.</li>
 			</ul>
 			<p><a href="how-to-play.html">Full rules with pictures →</a></p>
@@ -227,8 +228,8 @@ footer a { color: var(--accent); }
 	</div>
 </dialog>
 
-<script src="src/engine.js"></script>
-<script src="src/ai.js?v=3"></script>
+<script src="src/engine.js?v=4"></script>
+<script src="src/ai.js?v=4"></script>
 <script>
 (function () {
 	const D = window.Draughts;
@@ -278,7 +279,7 @@ footer a { color: var(--accent); }
 	const crowned = (before, move) => !D.isKing(before.board[move.from[0]][move.from[1]]) &&
 		move.path[move.path.length - 1][0] === (D.colorOf(before.board[move.from[0]][move.from[1]]) === 'w' ? 0 : 9);
 
-	try { worker = new Worker('src/ai-worker.js?v=3'); } catch (e) { worker = null; }
+	try { worker = new Worker('src/ai-worker.js?v=4'); } catch (e) { worker = null; }
 
 	const isAI = () => modeEl.value !== 'pvp';
 	const isHumanTurn = () => !isAI() || state.turn === sideEl.value;
@@ -371,7 +372,9 @@ footer a { color: var(--accent); }
 
 		if (ended) {
 			const head = ended === 'draw' ? 'Draw' : `${who(ended)} wins!`;
-			const line = ended === 'draw' ? '25 king moves each without a capture.' : `${nameOf(ended)} won this game.`;
+			const line = ended === 'draw'
+				? (D.drawReason(state) === 'few' ? 'Only 1 or 2 seeds left on each side, with no capture for 4 moves each.' : '25 moves each without a capture.')
+				: `${nameOf(ended)} won this game.`;
 			const next = `Next game: players switch sides, so <b>${nameOf('b')}</b> takes White and starts.`;
 			const brag = isAI() && ended === aColor() ? `<a class="share" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText())}">Share your win on WhatsApp</a>` : '';
 			statusEl.innerHTML = `${head}<small>${line}</small>${brag}<small>${next}</small>` +

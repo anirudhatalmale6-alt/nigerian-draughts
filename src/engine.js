@@ -17,6 +17,8 @@
  *  - Captured pieces stay on the board (as blockers, and cannot be jumped twice) until the move ends.
  *  - A man becomes a king only if it ENDS its move on the far row.
  *  - A player with no pieces or no legal move loses.
+ *  - Draw: 25 moves each without a capture or a man moving; or, when each side has at most 2 seeds,
+ *    4 such moves each.
  */
 (function (root, factory) {
 	if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -182,10 +184,25 @@
 		};
 	}
 
+	// Draw rules. "Quiet" moves are moves without a capture and without a man advancing.
+	const DRAW_QUIET_PLIES = 50;     // 25 quiet moves each, in general
+	const FEW_SEEDS = 2;             // when each side has at most this many seeds...
+	const FEW_SEEDS_QUIET_PLIES = 8; // ...the game is a draw after 4 quiet moves each
+
+	/** Why the game is drawn ('few' or 'quiet'), or null if it is not. */
+	function drawReason(state) {
+		if (state.quietPlies >= DRAW_QUIET_PLIES) return 'quiet';
+		if (state.quietPlies >= FEW_SEEDS_QUIET_PLIES) {
+			const n = count(state.board);
+			if (n.w <= FEW_SEEDS && n.b <= FEW_SEEDS) return 'few';
+		}
+		return null;
+	}
+
 	/** 'w' or 'b' if someone has won, 'draw', or null while the game continues. */
 	function result(state) {
 		if (!legalMoves(state).length) return state.turn === 'w' ? 'b' : 'w';
-		if (state.quietPlies >= 50) return 'draw'; // 25 king-only moves each without a capture
+		if (drawReason(state)) return 'draw';
 		return null;
 	}
 
@@ -200,5 +217,5 @@
 
 	const sameSq = (a, b) => a[0] === b[0] && a[1] === b[1];
 
-	return { SIZE, EMPTY, WM, WK, BM, BK, isDark, colorOf, isKing, newGame, initialBoard, legalMoves, applyMove, result, count, captureSequences, sameSq, cloneBoard };
+	return { SIZE, EMPTY, WM, WK, BM, BK, isDark, colorOf, isKing, newGame, initialBoard, legalMoves, applyMove, result, drawReason, count, captureSequences, sameSq, cloneBoard, FEW_SEEDS, FEW_SEEDS_QUIET_PLIES };
 });

@@ -74,7 +74,7 @@
 			if (aborted) return 0;
 			const moves = D.legalMoves(s);
 			if (!moves.length) return -WIN + ply;           // no move = loss
-			if (s.quietPlies >= 50) return 0;               // 25 king moves each without capture = draw
+			if (D.drawReason(s)) return 0;                  // same draw rules as the game
 			const capturing = moves[0].captures.length > 0;
 			if (depth <= 0 && !(capturing && ext < MAX_EXT)) return evaluate(s.board, s.turn);
 			if (depth <= 0) ext++;                          // keep resolving captures past the horizon

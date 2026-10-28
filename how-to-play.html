@@ -100,7 +100,7 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 0 
 		<div>
 			<h2><span>6</span>Winning</h2>
 			<p>You <b>win</b> when your opponent has no seeds left, or can't make any move.</p>
-			<p class="note">If 25 moves each are played with kings only and no capture, the game is a draw.</p>
+			<p><b>Draw:</b> when each side has only 1 or 2 seeds left, the game is a draw after 4 moves each without a capture. In general, it's a draw after 25 moves each without a capture.</p>
 		</div>
 	</section>
 
@@ -108,7 +108,7 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 0 
 </main>
 <footer>Naija Draft Club · <a href="./">Play</a></footer>
 
-<script src="src/engine.js"></script>
+<script src="src/engine.js?v=4"></script>
 <script>
 /* Diagrams are drawn from real positions and checked with the game's own rules engine. */
 (function () {

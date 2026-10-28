@@ -140,4 +140,46 @@ test('random games always stay legal and end', () => {
 	}
 });
 
+test('draw: 1-2 seeds each side and 4 quiet moves each (8 plies)', () => {
+	const s = state([[9, 9, WK], [7, 1, WK], [0, 0, BK]]);
+	s.quietPlies = 7;
+	assert.strictEqual(D.result(s), null, 'not yet after 7 quiet plies');
+	s.quietPlies = 8;
+	assert.strictEqual(D.result(s), 'draw');
+	assert.strictEqual(D.drawReason(s), 'few');
+});
+
+test('no early draw with 3 seeds on one side', () => {
+	const s = state([[9, 9, WK], [7, 1, WK], [9, 3, WK], [0, 0, BK]]);
+	s.quietPlies = 8;
+	assert.strictEqual(D.result(s), null);
+	s.quietPlies = 50;
+	assert.strictEqual(D.drawReason(s), 'quiet');
+});
+
+test('quiet-move count: king moves add, captures and man moves reset', () => {
+	let s = state([[9, 9, WK], [0, 0, BK], [3, 5, BM]]);
+	s.quietPlies = 5;
+	const kingQuiet = D.legalMoves(s).find((m) => !m.captures.length);
+	assert.strictEqual(D.applyMove(s, kingQuiet).quietPlies, 6);
+	s = state([[6, 4, WM], [0, 0, BK]]); s.quietPlies = 5;
+	assert.strictEqual(D.applyMove(s, D.legalMoves(s)[0]).quietPlies, 0, 'a man move resets');
+	s = state([[9, 9, WK], [5, 5, BM], [0, 2, BK]]); s.quietPlies = 5;
+	assert.strictEqual(D.applyMove(s, D.legalMoves(s)[0]).quietPlies, 0, 'a capture resets');
+});
+
+test('a real 2-vs-1 king endgame is declared a draw after 4 quiet moves each', () => {
+	let s = state([[9, 9, WK], [8, 2, WK], [0, 4, BK]]);
+	let plies = 0;
+	while (!D.result(s) && plies < 30) {
+		// Pick a quiet move that doesn't give a capture away, so the game stays 2 v 1.
+		const quiet = D.legalMoves(s).filter((m) => !m.captures.length);
+		const safe = quiet.filter((m) => !D.legalMoves(D.applyMove(s, m)).some((r) => r.captures.length)) ;
+		s = D.applyMove(s, (safe[0] || quiet[0] || D.legalMoves(s)[0]));
+		plies++;
+	}
+	assert.strictEqual(D.result(s), 'draw');
+	assert.strictEqual(plies, 8);
+});
+
 console.log(`\n${passed} tests passed`);
