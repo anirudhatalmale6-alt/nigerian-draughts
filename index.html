@@ -112,6 +112,8 @@ footer a { color: var(--accent); }
 .modal-card .x { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; padding: 0; font-size: 1.4rem; line-height: 1; background: transparent; color: var(--muted); }
 .form-msg { margin: 0; min-height: 1.2em; font-size: .85rem; font-weight: 700; }
 .form-msg.err { color: #ff8a7a; }
+.offline { margin: 0 16px 10px; font-size: .82rem; text-align: center; color: var(--muted); }
+.offline.yes { color: #7fd3a0; } .offline.no { color: #ffb38a; }
 .hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
 .seed.slide { animation: slide .24s ease-out; z-index: 2; }
 @keyframes slide { from { transform: translate(calc(var(--dx) * 121.95%), calc(var(--dy) * 121.95%)); } }
@@ -183,6 +185,7 @@ footer a { color: var(--accent); }
 		</details>
 	</aside>
 </main>
+<p id="offline" class="offline" aria-live="polite"></p>
 <footer>Naija Draft Club · test version: tell us what you think with <a href="#" data-open="feedback">Send feedback</a> · <a href="how-to-play.html">How to play</a></footer>
 
 <dialog id="join" class="modal" aria-labelledby="joinTitle">
@@ -580,8 +583,17 @@ footer a { color: var(--accent); }
 	});
 	wire('feedbackForm', 'feedback.php', () => ({ context: window.NDC ? window.NDC.context() : '' }));
 
-	if ('serviceWorker' in navigator && location.protocol === 'https:') {
-		window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+	// Offline status for the player: ready, or why this browser can't play without data.
+	const offlineEl = document.getElementById('offline');
+	const setOffline = (cls, text) => { if (offlineEl) { offlineEl.className = 'offline ' + cls; offlineEl.textContent = text; } };
+	if (!('serviceWorker' in navigator) || !('caches' in window)) {
+		setOffline('no', 'This browser can\u2019t save the game for offline play. Open naijadraftclub.com in Chrome (or Safari on iPhone) to play without data.');
+	} else if (location.protocol === 'https:') {
+		window.addEventListener('load', () => {
+			navigator.serviceWorker.register('sw.js').catch(() => setOffline('no', 'Offline play could not be set up in this browser. Try Chrome.'));
+			navigator.serviceWorker.ready.then(() => caches.keys()).then((keys) => Promise.all(keys.map((k) => caches.open(k).then((c) => c.match('index.html')))))
+				.then((hits) => { if (hits.some(Boolean)) setOffline('yes', '\u2714 Ready to play offline on this device'); });
+		});
 	}
 })();
 </script>
